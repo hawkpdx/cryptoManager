@@ -113,3 +113,4 @@ The trading bot controls allow you to autonomously trade cryptocurrencies on the
 For questions or support, please reach out.
 
 ---
+# cryptoManager
