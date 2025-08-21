@@ -68,14 +68,21 @@ class KrakenClient {
     async addOrder(pair, type, ordertype, volume, price = null) {
         const params = {
             pair,
-            type, // buy or sell
-            ordertype, // e.g., 'limit', 'market'
+            type, // buy or sell    
+            ordertype, // e.g.,     
             volume,
         };
         if (price !== null) {
             params.price = price;
         }
         return this._privateRequest('/0/private/AddOrder', params);
+    }
+    async getOHLC(pair, interval = 1440) { // interval in minutes, default 1440 = 1 day
+        const response = await axios.get(`${this.apiUrl}/0/public/OHLC?pair=${pair}&interval=${interval}`);
+        if (response.data.error && response.data.error.length) {
+            throw new Error(response.data.error.join(', '));
+        }
+        return response.data.result;
     }
 }
 

@@ -51,7 +51,7 @@ const Portfolio = () => {
   const data = balance
     ? Object.entries(balance).map(([asset, amount]) => ({
         name: asset,
-        value: parseFloat(amount),
+        value: parseFloat(amount).toFixed(2),
       }))
     : [];
 
@@ -97,7 +97,7 @@ const Portfolio = () => {
       <ul>
         {balance && Object.entries(balance).map(([asset, amount]) => (
           <li key={asset}>
-            {asset}: {amount}
+            {asset}: {parseFloat(amount).toFixed(2)}
           </li>
         ))}
       </ul>

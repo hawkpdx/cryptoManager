@@ -116,21 +116,28 @@ app.post('/api/tradingbot/params', (req, res) => {
     res.json({ status: 'params updated', params: tradingBot.params });
 });
 
-app.get('/api/performance/:pair', (req, res) => {
+app.get('/api/performance/:pair', async (req, res) => {
     const pair = req.params.pair;
+    try {
+        const ohlcData = await krakenClient.getOHLC(pair, 1440); // daily interval
+        const pairKey = Object.keys(ohlcData)[0];
+        const ohlcArray = ohlcData[pairKey];
 
-    const performanceData = [
-        { date: "2023-06-01", value: 100 },
-        { date: "2023-06-02", value: 102 },
-        { date: "2023-06-03", value: 101 },
-        { date: "2023-06-04", value: 105 },
-        { date: "2023-06-05", value: 110 },
-        { date: "2023-06-06", value: 108 },
-        { date: "2023-06-07", value: 115 }
-    ];
+        // Map OHLC data to {date, value} with date as ISO string and value as closing price
+        const performanceData = ohlcArray.map(item => {
+            const [time, open, high, low, close] = item;
+            return {
+                date: new Date(time * 1000).toISOString().split('T')[0], // YYYY-MM-DD
+                value: parseFloat(close)
+            };
+        });
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(performanceData));
+        res.setHeader('Content-Type', 'application/json');
+        res.json(performanceData);
+    } catch (error) {
+        console.error(`Error fetching performance data for ${pair}:`, error.message);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.get('/api/kraken/ticker/:pair', async (req, res) => {
@@ -159,8 +166,8 @@ app.get('/api/kraken/prices', async (req, res) => {
 
         const assetPairs = Object.keys(await krakenClient.getAssetPairs());
         const prices = {};
-        // Limit to first 20 pairs to reduce load
-        const pairsToFetch = assetPairs.slice(0, 20);
+        // Removed limit to fetch all pairs
+        const pairsToFetch = assetPairs;
 
         for (const pair of pairsToFetch) {
             try {

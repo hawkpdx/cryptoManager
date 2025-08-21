@@ -10,7 +10,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Garrett's Trading Dashboard</h1>
+      <h1 className='dashboard-title'>Garrett's Trading Dashboard</h1>
+      <img
+      src="https://i.etsystatic.com/19730085/r/il/c75fd1/3208736874/il_fullxfull.3208736874_cqv2.jpg"
+      alt="xrpLogo"
+      />
       <Portfolio />
       <div>
         <label htmlFor="pair-select">Select Trading Pair: </label>

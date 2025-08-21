@@ -17,8 +17,7 @@ build/
 
 # Environment variables
 .env
-/Users/hawkpdx/Development/code/cryptoBot/cryptoBotBackend/.env
-/Users/hawkpdx/Development/code/cryptoBot/.env
+
 # IDE files
 .vscode/
 .idea/
