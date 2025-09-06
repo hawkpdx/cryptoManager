@@ -10,10 +10,17 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Kraken client with environment variables or placeholders
-const krakenApiKey = process.env.KRAKEN_API_KEY || 'ZLkKVbdhpgAPfRIMR4tdRJR/hwpt20+qICTwhSO/en5ELLu6mm0tzvN5';
-const krakenApiSecret = process.env.KRAKEN_API_SECRET || 'iMOjVf+6RDPaYMDD8kcaVECkbEX4ZX7ujiHKrURcqozMyrqDr/LplqzdizlCAoSLayJ28hRDQio5vTRwk7tFUQ==';
-const krakenClient = new KrakenClient(krakenApiKey, krakenApiSecret);
+// Initialize Kraken client with environment variables
+const krakenApiKey = process.env.KRAKEN_API_KEY;
+const krakenApiSecret = process.env.KRAKEN_API_SECRET;
+
+if (!krakenApiKey || !krakenApiSecret) {
+    console.warn('Warning: KRAKEN_API_KEY and KRAKEN_API_SECRET environment variables are not set.');
+    console.warn('Please create a .env file in the cryptoBotBackend directory with your Kraken API credentials.');
+    console.warn('The application will continue but trading functionality may be limited.');
+}
+
+const krakenClient = new KrakenClient(krakenApiKey || 'placeholder_key', krakenApiSecret || 'placeholder_secret');
 
 const tradingBot = new TradingBot(krakenClient);
 
